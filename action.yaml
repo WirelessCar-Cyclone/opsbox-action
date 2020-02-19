@@ -1,0 +1,8 @@
+name: 'Execute Manifest Build Make/Kustomize'
+description: 'Execute kustomize using Make as wrapper'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+branding:
+  icon: 'play'
+  color: 'green'

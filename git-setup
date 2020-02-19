@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+
+set -euox pipefail
+
+VAULT="$1"
+
+GITSOURCE="$2"
+KEYSOURCE="$3"
+
+GITTARGET="$4"
+KEYTARGET="$5"
+
+SSHSOURCE="/root/.ssh/$KEYSOURCE"
+SSHTARGET="/root/.ssh/$KEYTARGET"
+
+CLONESOURCE="${GITSOURCE/github.com/${KEYSOURCE}}"
+CLONETARGET="${GITTARGET/github.com/${KEYTARGET}}"
+
+
+mkdir -p /root/.ssh
+
+rm -rf "$SSHSOURCE"
+rm -rf "$SSHTARGET"
+
+az keyvault secret download --file "$SSHSOURCE-cert" --encoding base64 --vault-name "$VAULT" --name "$KEYSOURCE"
+az keyvault secret download --file "$SSHTARGET-cert" --encoding base64 --vault-name "$VAULT" --name "$KEYTARGET"
+
+cat "$SSHSOURCE-cert" |openssl pkcs12 -nocerts -nodes -password 'pass:' > "$SSHSOURCE"
+cat "$SSHTARGET-cert" |openssl pkcs12 -nocerts -nodes -password 'pass:' > "$SSHTARGET"
+
+chmod 700 /root/.ssh
+chmod 600 "$SSHSOURCE"
+chmod 600 "$SSHTARGET"
+
+ssh-keygen -p -m PEM -f "$SSHSOURCE" -q -N ""
+ssh-keygen -p -m PEM -f "$SSHTARGET" -q -N ""
+
+git config --global user.email "cyclone@wirelesscar.com"
+git config --global user.name "Cyclone admin"
+
+cat << EOF >> /root/.ssh/config
+Host "$KEYSOURCE"
+    HostName github.com
+    User git
+    IdentityFile "$SSHSOURCE"
+
+Host "$KEYTARGET"
+    HostName github.com
+    User git
+    IdentityFile "$SSHTARGET"
+EOF
+
+cat << EOF >> /root/.ssh/known_hosts
+github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ==
+EOF
+
+rm -rf out/target
+rm -rf out/source
+
+mkdir -p out
+
+pushd out
+
+git -c core.sshCommand="ssh -i $SSHSOURCE" clone "$CLONESOURCE" source
+git -c core.sshCommand="ssh -i $SSHTARGET" clone "$CLONETARGET" target

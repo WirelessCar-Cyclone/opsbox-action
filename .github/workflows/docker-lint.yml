@@ -1,0 +1,9 @@
+on: push
+name: Lint files
+jobs:
+  dockerlint:
+    name: Dockerfile lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: bltavares/actions/hadolint@master
