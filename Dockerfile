@@ -10,7 +10,7 @@ ENV HELM_VERSION="v3.1.0"
 
 WORKDIR /tmp
 
-RUN apk add ncurses \
+RUN apk add ncurses coreutils \
 
  && curl -L https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64 -o yq \
  && install -m 755 -o root -g bin yq /usr/local/bin/yq \
