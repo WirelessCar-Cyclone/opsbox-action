@@ -28,7 +28,7 @@ function parse_input() {
 }
 
 function import_docker() {
-    az acr import -n wcorn --source "${SOURCE}" -t "wcorn.azurecr.io/external/${DOCKER_NAME}:${DOCKER_TAG}"
+    az acr import -n wcorn --source "${SOURCE}" -t "wcorn.azurecr.io/external/${DOCKER_NAME}:${DOCKER_TAG}" --force
 }
 
 check_deps && \
