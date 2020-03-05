@@ -10,7 +10,7 @@ ENV HELM_VERSION="v3.1.0"
 
 WORKDIR /tmp
 
-RUN apk --no-cache add ncurses coreutils \
+RUN apk --no-cache add ncurses=6.1_p20190518-r2 coreutils=8.31-r0 \
  && curl -L https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64 -o yq \
  && install -m 755 -o root -g bin yq /usr/local/bin/yq \
 # Setup kubectl
