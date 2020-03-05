@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+#TODO This script is duplicated between opsbox-action and opsbox-docker, please ref https://jira.it.wirelesscar.com/browse/CYC-492
+
 set -euox pipefail
 
 VAULT="$1"
