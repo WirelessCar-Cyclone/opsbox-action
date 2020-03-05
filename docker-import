@@ -23,8 +23,8 @@ function parse_input() {
   DOCKER_TAG=${INPUT_ARRAY[-1]}
   DOCKER_NAME=${INPUT_ARRAY[-2]}
 
-  [[ -z "${DOCKER_NAME}" ]] || error_exit "Unable to parse input docker name missing."
-  [[ -z "${DOCKER_TAG}" ]] || error_exit "Unable to parse input docker tag missing."
+  [[ -n "${DOCKER_NAME}" ]] || error_exit "Unable to parse input docker name missing."
+  [[ -n "${DOCKER_TAG}" ]] || error_exit "Unable to parse input docker tag missing."
 }
 
 function import_docker() {
