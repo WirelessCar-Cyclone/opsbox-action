@@ -16,10 +16,6 @@ RUN apk --no-cache add ncurses=6.1_p20190518-r2 coreutils=8.31-r0 \
 # Setup kubectl
  && curl -L https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl -o kubectl \
  && install -m 755 -o root -g bin kubectl /usr/local/bin/kubectl \
-# Setup can we use a version for this !?
- && git clone https://github.com/ahmetb/kubectx kubectx \
- && install -m 755 -o root -g bin kubectx/kubectx /usr/local/bin/kubectx \
- && install -m 755 -o root -g bin kubectx/kubens /usr/local/bin/kubens \
 # Setup kubeseal (i.e sealed-secrets)
  && curl -L https://github.com/bitnami-labs/sealed-secrets/releases/download/${SEALED_SECRET_VERSION}/kubeseal-linux-amd64 -o kubeseal \
  && install -m 755 -o root -g bin kubeseal /usr/local/bin/kubeseal \
@@ -27,15 +23,15 @@ RUN apk --no-cache add ncurses=6.1_p20190518-r2 coreutils=8.31-r0 \
  && curl -L https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz -o helm-linux-amd64.tar.gz \
  && tar -zxf helm-linux-amd64.tar.gz \
  && install -m 755 -o root -g bin linux-amd64/helm /usr/local/bin/helm \
- && rm -rf /tmp/*
-
-COPY "git-setup" "/tmp/git-setup"
-COPY "git-publish" "/tmp/git-publish"
-COPY "docker-import" "/tmp/docker-import"
-
-RUN install -m 755 -o root -g bin git-setup /usr/local/bin/git-setup \
- && install -m 755 -o root -g bin git-publish /usr/local/bin/git-publish \
- && install -m 755 -o root -g bin docker-import /usr/local/bin/docker-import \
+# Setup can we use a version for this !?
+ && git clone https://github.com/ahmetb/kubectx kubectx \
+ && install -m 755 -o root -g bin kubectx/kubectx /usr/local/bin/kubectx \
+ && install -m 755 -o root -g bin kubectx/kubens /usr/local/bin/kubens \
+# Setup can we use a version for this !?
+ && git clone https://github.com/WirelessCar-Cyclone/configuration-management-script ccm \
+ && install -m 755 -o root -g bin ccm/src/bash/git-setup /usr/local/bin/git-setup \
+ && install -m 755 -o root -g bin ccm/src/bash/git-publish /usr/local/bin/git-publish \
+ && install -m 755 -o root -g bin ccm/src/bash/docker-import /usr/local/bin/docker-import \
  && rm -rf /tmp/*
 
 COPY "entrypoint.sh" "/entrypoint.sh"
