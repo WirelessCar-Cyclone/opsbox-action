@@ -32,6 +32,7 @@ RUN apk --no-cache add ncurses=6.1_p20190518-r2 coreutils=8.31-r0 \
  && install -m 755 -o root -g bin ccm/src/bash/git-setup /usr/local/bin/git-setup \
  && install -m 755 -o root -g bin ccm/src/bash/git-publish /usr/local/bin/git-publish \
  && install -m 755 -o root -g bin ccm/src/bash/docker-import /usr/local/bin/docker-import \
+ && install -m 755 -o root -g bin ccm/src/make/application /usr/local/bin/application \
  && rm -rf /tmp/*
 
 COPY "entrypoint.sh" "/entrypoint.sh"
