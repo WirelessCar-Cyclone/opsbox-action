@@ -1,5 +1,7 @@
-on: push
 name: Lint files
+
+on: [pull_request]
+
 jobs:
   dockerlint:
     name: Dockerfile lint
